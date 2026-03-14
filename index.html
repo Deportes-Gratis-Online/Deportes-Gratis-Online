@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ESPN TV LIVE — Deportes en Vivo</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700;900&family=Barlow+Condensed:wght@400;600;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --green-dark: #064e3b;
+  --gold: #facc15;
+  --red: #dc2626;
+  --red-dark: #b91c1c;
+  --white: #ffffff;
+  --black: #000000;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--green-dark);
+  color: var(--white);
+  font-family: 'Barlow Condensed', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at top left, rgba(5,150,105,.18) 0%, transparent 60%),
+    radial-gradient(ellipse at bottom right, rgba(6,78,59,.4) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── HEADER ── */
+header {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 48px 16px 32px;
+  border-bottom: 1px solid rgba(250,204,21,.15);
+}
+.logo-badge {
+  display: inline-block;
+  background: var(--red);
+  color: var(--white);
+  font-family: 'Oswald', sans-serif;
+  font-weight: 900;
+  font-size: clamp(11px, 2vw, 13px);
+  letter-spacing: .35em;
+  padding: 4px 18px;
+  border-radius: 4px;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+}
+header h1 {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 900;
+  font-size: clamp(36px, 8vw, 72px);
+  line-height: 1;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+}
+header h1 .accent { color: var(--gold); }
+header p {
+  color: rgba(255,255,255,.5);
+  font-size: clamp(9px, 1.5vw, 11px);
+  letter-spacing: .4em;
+  margin-top: 10px;
+  text-transform: uppercase;
+}
+
+/* ── TABS ── */
+.tabs-wrapper {
+  position: relative;
+  z-index: 10;
+  max-width: 700px;
+  margin: 32px auto 0;
+  padding: 0 16px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.tab-btn {
+  background: rgba(0,0,0,.45);
+  border: 1px solid rgba(255,255,255,.12);
+  color: rgba(255,255,255,.65);
+  padding: 10px 28px;
+  border-radius: 999px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .25s;
+}
+.tab-btn:hover { border-color: var(--gold); color: var(--white); }
+.tab-btn.active { background: var(--gold); color: var(--black); border-color: var(--gold); }
+
+/* ── AD SLOT ── */
+.ad-slot {
+  position: relative;
+  z-index: 10;
+  max-width: 1100px;
+  margin: 24px auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+  position: relative;
+  z-index: 10;
+  max-width: 1100px;
+  margin: 40px auto 16px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.section-label h2 {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 900;
+  font-size: clamp(18px, 3vw, 26px);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.section-label h2 span { color: var(--gold); }
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(250,204,21,.3), transparent);
+}
+.live-pill {
+  background: var(--red);
+  color: var(--white);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .15em;
+  padding: 4px 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Oswald', sans-serif;
+  white-space: nowrap;
+}
+
+/* ── GRID ── */
+.games-grid {
+  position: relative;
+  z-index: 10;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px 16px;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* ── CARD ── */
+.game-card {
+  background: var(--white);
+  border-radius: 20px;
+  overflow: hidden;
+  color: var(--black);
+  text-align: center;
+  position: relative;
+  transition: transform .3s, box-shadow .3s;
+  box-shadow: 0 8px 24px rgba(0,0,0,.18);
+  display: flex;
+  flex-direction: column;
+}
+.game-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(0,0,0,.28);
+}
+
+/* 1. IMAGEN */
+.card-img-wrap {
+  position: relative;
+  background: #111;
+  padding: 22px 20px 14px;
+}
+.sport-tag {
+  position: absolute;
+  top: 10px; left: 10px;
+  background: var(--black);
+  color: #22c55e;
+  font-family: 'Oswald', sans-serif;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: .12em;
+  padding: 3px 9px;
+  border-radius: 6px;
+}
+.teams-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 6px;
+}
+.team-logo {
+  width: 62px; height: 62px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #222;
+}
+.vs-text {
+  font-family: 'Oswald', sans-serif;
+  font-size: 24px; font-weight: 900;
+  color: var(--red);
+}
+
+/* 2. TÍTULO */
+.card-title-wrap {
+  padding: 14px 16px 0;
+  background: var(--white);
+}
+.match-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 15px; font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1.25;
+  color: #111;
+}
+.match-title .vs { color: var(--red); }
+
+/* 3. EN VIVO */
+.card-live-wrap {
+  padding: 12px 16px;
+  background: var(--white);
+}
+.live-bar {
+  background: var(--black);
+  border: 1px solid rgba(250,204,21,.35);
+  border-radius: 10px;
+  padding: 9px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+.live-dot {
+  width: 7px; height: 7px;
+  background: #22c55e;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: pulse 1.4s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
+.live-bar span {
+  color: #22c55e;
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .18em;
+}
+
+/* 4. BOTÓN */
+.card-btn-wrap {
+  padding: 0 16px 18px;
+  background: var(--white);
+  margin-top: auto;
+}
+.watch-btn {
+  display: block;
+  width: 100%;
+  padding: 13px 10px;
+  background: var(--red);
+  color: var(--white);
+  border: none;
+  border-radius: 999px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .25s, transform .15s;
+  text-decoration: none;
+}
+.watch-btn:hover { background: var(--red-dark); transform: scale(1.02); }
+
+/* ── FOOTER ── */
+footer {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 36px 16px;
+  border-top: 1px solid rgba(255,255,255,.07);
+  color: rgba(255,255,255,.3);
+  font-size: 11px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  margin-top: 40px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .games-grid { grid-template-columns: 1fr; }
+  .tabs-wrapper { gap: 8px; }
+  .tab-btn { padding: 9px 18px; font-size: 12px; }
+  .team-logo { width: 50px; height: 50px; }
+}
+@media (min-width: 601px) and (max-width: 900px) {
+  .games-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 901px) {
+  .games-grid { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-badge">⚡ ESPN TV LIVE</div>
+  <h1>DEPORTES <span class="accent">EN VIVO</span></h1>
+  <p>Fútbol · Béisbol · Más deportes en tiempo real</p>
+</header>
+
+<!-- TABS -->
+<div class="tabs-wrapper">
+  <button class="tab-btn active" onclick="setTab('ALL', this)">TODOS</button>
+  <button class="tab-btn" onclick="setTab('FUTBOL', this)">⚽ FÚTBOL</button>
+  <button class="tab-btn" onclick="setTab('BEISBOL', this)">⚾ BÉISBOL</button>
+</div>
+
+<!-- AD #1 -->
+<div class="ad-slot">
+  <script>
+    atOptions = {
+      'key' : 'fb20a41f0a223b6c539311518270933b',
+      'format' : 'iframe',
+      'height' : 50,
+      'width' : 320,
+      'params' : {}
+    };
+  </script>
+  <script src="https://rhinocerossteadyartsy.com/fb20a41f0a223b6c539311518270933b/invoke.js"></script>
+</div>
+
+<!-- SECCIÓN FÚTBOL -->
+<div class="section-label" id="sec-FUTBOL">
+  <h2>⚽ <span>Fútbol</span> en Vivo</h2>
+  <span class="live-pill"><span class="live-dot"></span> EN VIVO</span>
+</div>
+<div class="games-grid" id="grid-FUTBOL"></div>
+
+<!-- SECCIÓN BÉISBOL -->
+<div class="section-label" id="sec-BEISBOL">
+  <h2>⚾ <span>Béisbol</span> en Vivo</h2>
+  <span class="live-pill"><span class="live-dot"></span> EN VIVO</span>
+</div>
+<div class="games-grid" id="grid-BEISBOL"></div>
+
+<!-- AD #2 -->
+<div class="ad-slot">
+  <script>
+    atOptions = {
+      'key' : 'fb20a41f0a223b6c539311518270933b',
+      'format' : 'iframe',
+      'height' : 50,
+      'width' : 320,
+      'params' : {}
+    };
+  </script>
+  <script src="https://rhinocerossteadyartsy.com/fb20a41f0a223b6c539311518270933b/invoke.js"></script>
+</div>
+
+<!-- FOOTER -->
+<footer>ESPN TV LIVE — Transmisiones en tiempo real — &copy; 2025</footer>
+
+<script>
+/* ═══ PARTIDOS ═══════════════════════════════════════════════════════════
+   Cambia cada "url" por el link del post de Blogger de ese partido.
+   El link se abrirá en una PESTAÑA NUEVA al hacer clic en el botón.
+   ════════════════════════════════════════════════════════════════════════ */
+var games = [
+
+  /* ── FÚTBOL (3 partidos) ── */
+  {
+    sport: "FUTBOL",
+    t1: "España",    t2: "Francia",
+    l1: "https://a.espncdn.com/combiner/i?img=/i/teamlogos/countries/500/esp.png&h=72&w=72",
+    l2: "https://a.espncdn.com/combiner/i?img=/i/teamlogos/countries/500/fra.png&h=72&w=72",
+    url: "https://rankingplanetaalofoke.blogspot.com/2026/03/espana-vs-francia.html"
+  },
+  {
+    sport: "FUTBOL",
+    t1: "Brasil",    t2: "Argentina",
+    l1: "https://a.espncdn.com/combiner/i?img=/i/teamlogos/countries/500/bra.png&h=72&w=72",
+    l2: "https://a.espncdn.com/combiner/i?img=/i/teamlogos/countries/500/arg.png&h=72&w=72",
+    url: "https://rankingplanetaalofoke.blogspot.com/2026/03/brasil-vs-argentina.html"
+  },
+  {
+    sport: "FUTBOL",
+    t1: "México",    t2: "Colombia",
+    l1: "https://a.espncdn.com/combiner/i?img=/i/teamlogos/countries/500/mex.png&h=72&w=72",
+    l2: "https://a.espncdn.com/combiner/i?img=/i/teamlogos/countries/500/col.png&h=72&w=72",
+    url: "https://rankingplanetaalofoke.blogspot.com/2026/03/mexico-vs-colombia.html"
+  },
+
+  /* ── BÉISBOL (3 partidos) ── */
+  {
+    sport: "BEISBOL",
+    t1: "United States",  t2: "Canada",
+    l1: "https://i.postimg.cc/J0kDW0Mq/gyujyvuygu.jpg",
+    l2: "https://i.postimg.cc/T2F4x3rD/bhuihuiuh.jpg",
+    url: "https://rankingplanetaalofoke.blogspot.com/2026/03/usa-vs-canada.html"
+  },
+  {
+    sport: "BEISBOL",
+    t1: "Rep. Dominicana", t2: "Korea",
+    l1: "https://a.espncdn.com/combiner/i?img=/i/teamlogos/countries/500/dom.png&cquality=80&h=72&scale=crop&w=72",
+    l2: "https://i.postimg.cc/6Qc6xYBN/huihiuhiihui.jpg",
+    url: "https://rankingplanetaalofoke.blogspot.com/2026/03/dominicana-vs-korea.html"
+  },
+  {
+    sport: "BEISBOL",
+    t1: "Cuba",    t2: "Venezuela",
+    l1: "https://a.espncdn.com/combiner/i?img=/i/teamlogos/countries/500/cub.png&h=72&w=72",
+    l2: "https://a.espncdn.com/combiner/i?img=/i/teamlogos/countries/500/ven.png&h=72&w=72",
+    url: "https://rankingplanetaalofoke.blogspot.com/2026/03/cuba-vs-venezuela.html"
+  }
+];
+
+var currentTab = "ALL";
+
+function setTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll(".tab-btn").forEach(function(b){ b.classList.remove("active"); });
+  btn.classList.add("active");
+  renderGames();
+}
+
+/* Abre el link del partido en una pestaña nueva */
+function irAlPartido(url) {
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+function cardHTML(g) {
+  var label = g.sport === "FUTBOL" ? "⚽ FÚTBOL" : "⚾ BÉISBOL";
+  return (
+    '<div class="game-card">' +
+      /* 1. IMAGEN */
+      '<div class="card-img-wrap">' +
+        '<span class="sport-tag">' + label + '</span>' +
+        '<div class="teams-row">' +
+          '<img src="' + g.l1 + '" alt="' + g.t1 + '" class="team-logo" onerror="this.src=\'https://placehold.co/62x62/111/fff?text=?\'">' +
+          '<span class="vs-text">VS</span>' +
+          '<img src="' + g.l2 + '" alt="' + g.t2 + '" class="team-logo" onerror="this.src=\'https://placehold.co/62x62/111/fff?text=?\'">' +
+        '</div>' +
+      '</div>' +
+      /* 2. TÍTULO */
+      '<div class="card-title-wrap">' +
+        '<div class="match-title">' + g.t1 + ' <span class="vs">vs</span> ' + g.t2 + '</div>' +
+      '</div>' +
+      /* 3. EN VIVO */
+      '<div class="card-live-wrap">' +
+        '<div class="live-bar"><span class="live-dot"></span><span>EN VIVO AHORA</span></div>' +
+      '</div>' +
+      /* 4. BOTÓN — abre pestaña nueva */
+      '<div class="card-btn-wrap">' +
+        '<button class="watch-btn" onclick="irAlPartido(\'' + g.url + '\')">VER PARTIDO AHORA</button>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+function renderGames() {
+  ["FUTBOL", "BEISBOL"].forEach(function(cat) {
+    var grid = document.getElementById("grid-" + cat);
+    var sec  = document.getElementById("sec-"  + cat);
+    var filtered = games
+      .filter(function(g){ return g.sport === cat && (currentTab === "ALL" || currentTab === cat); })
+      .slice(0, 3);
+    var show = filtered.length > 0;
+    sec.style.display  = show ? "" : "none";
+    grid.style.display = show ? "" : "none";
+    grid.innerHTML = filtered.map(cardHTML).join("");
+  });
+}
+
+renderGames();
+</script>
+
+</body>
+</html>
